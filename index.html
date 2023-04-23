@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
 
-    <title>Last.fm Scrobbles</title>
+    <title>Songs I'm Listening</title>
 <script src="https://kit.fontawesome.com/b4dd5434a9.js" crossorigin="anonymous"></script>
     <style>
       .now-playing {
@@ -16,13 +16,15 @@
     </style>
   </head>
   <body>
-    <h1>Last.fm Scrobbles</h1>
+<header>
+    <h1>Songs I'm Listening</h1>
     <h2 id="total"></h2>
+</header>
     <ul id="scrobbles"></ul>
     <script>
       const apiKey = '521d6860b766106d6bd3566347704a8c';
       const username = 'thesudipmandal';
-      const limit = 5;
+      const limit = 20;
 
       const apiUrl = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&limit=${limit}&format=json`;
 
@@ -32,7 +34,7 @@
           const tracks = data.recenttracks.track;
           const scrobblesList = document.getElementById('scrobbles');
           const totalScrobbles = data.recenttracks['@attr'].total;
-          document.getElementById('total').innerText = `Total scrobbles: ${totalScrobbles}`;
+          document.getElementById('total').innerText = `Total songs played (since Oct 2019): ${totalScrobbles} times`;
           tracks.forEach(track => {
             const artist = track.artist['#text'];
             const title = track.name;
@@ -64,5 +66,8 @@
         })
         .catch(error => console.error(error));
     </script>
+<footer>
+    <p><a href="https://www.last.fm/user/thesudipmandal">For more detailed charts, click here</a></p>
+</footer>
   </body>
 </html>
