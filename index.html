@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+
+    <title>Last.fm Scrobbles</title>
+<script src="https://kit.fontawesome.com/b4dd5434a9.js" crossorigin="anonymous"></script>
+    <style>
+      .now-playing {
+        color: red;
+      }
+      .now-playing .fa {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Last.fm Scrobbles</h1>
+    <h2 id="total"></h2>
+    <ul id="scrobbles"></ul>
+    <script>
+      const apiKey = '521d6860b766106d6bd3566347704a8c';
+      const username = 'thesudipmandal';
+      const limit = 5;
+
+      const apiUrl = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&limit=${limit}&format=json`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const tracks = data.recenttracks.track;
+          const scrobblesList = document.getElementById('scrobbles');
+          const totalScrobbles = data.recenttracks['@attr'].total;
+          document.getElementById('total').innerText = `Total scrobbles: ${totalScrobbles}`;
+          tracks.forEach(track => {
+            const artist = track.artist['#text'];
+            const title = track.name;
+            const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
+            let scrobbleText = `${artist} - ${title}`;
+            if (isNowPlaying) {
+              scrobbleText += ' <span class="now-playing">(now playing) <i class="fa-solid fa-music"></i></span>';
+            } else {
+              const scrobbleTime = track.date ? new Date(parseInt(track.date.uts) * 1000) : new Date();
+              const timeDiff = Math.floor((new Date() - scrobbleTime) / 1000); // difference in seconds
+              if (timeDiff < 60) {
+                scrobbleText += ` (${timeDiff} seconds ago)`;
+              } else if (timeDiff < 60 * 60) {
+                scrobbleText += ` (${Math.floor(timeDiff / 60)} minutes ago)`;
+              } else if (timeDiff < 60 * 60 * 24) {
+                scrobbleText += ` (${Math.floor(timeDiff / (60 * 60))} hours ago)`;
+              } else {
+                scrobbleText += ` (${Math.floor(timeDiff / (60 * 60 * 24))} days ago)`;
+              }
+            }
+            const scrobbleItem = document.createElement('li');
+            scrobbleItem.innerHTML = scrobbleText;
+            if (isNowPlaying) {
+              scrobbleItem.classList.add('now-playing');
+
+            }
+            scrobblesList.appendChild(scrobbleItem);
+          });
+        })
+        .catch(error => console.error(error));
+    </script>
+  </body>
+</html>
