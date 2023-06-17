@@ -1,0 +1,13 @@
+h2 {
+    color: var(--red);
+}
+.now-playing {
+    color: red;
+      }
+.now-playing .fa {
+    margin-left: 10px;
+}
+.made {
+    text-align: center;
+    font-size: small;
+}
